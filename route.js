@@ -36,10 +36,11 @@ if(url === '/'){
     res.write('</html>')
     res.end();
 };
-//module.exports = requestHandler;
+
+module.exports = requestHandler;
 // module.exports ={
 //     handler : requestHandler,
 //     someText :"some hardcoded text"
-// };
-module.exports.handler= requestHandler;
-module.exports.someText= "some hardcoded text";
+// // };
+// module.exports.handler= requestHandler;
+// module.exports.someText= "some hardcoded text";

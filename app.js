@@ -1,118 +1,58 @@
-// const http = require('http');
+const path= require('path');
 
-// const fs = require('fs');
+const http = require('http');
 
-// const bodyparser= require('body-parser');
+const bodyparser= require('body-parser');
 
-// const express= require('express');
+const express= require('express');
 
-// let name="";
+const app= express();
 
-// const app= express();
+// app.use ((req,res,next) => {
+//     console.log('In the middleware :');
+//     next();
+// });
 
-// app.use(bodyparser.urlencoded({extended: false}));
-// app.use(express.json());
+// app.use('/',(req,res,next) => {
+//     console.log("This always runs!")
+//     next();
+// })
 
-// app.use ('/login',(req,res,next) => {
-    
-//     res.send('<body><form action="/ll" method="POST"><input type="text" name="userName"><button type="submit">Login</button></form></body>');
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const contactRoutes = require('./routes/contact');
+const SuccessRoutes = require('./routes/Success');
+
+ app.use(bodyparser.urlencoded({extended: false}));
+ app.use(express.static(path.join(__dirname,"public")))
+
+// app.use ('/add-product',(req,res,next) => {
+//     //console.log('In another middleware :');
+//     res.send('<form action="/product" method="POST"><input type="text" name="title"><input type="text" name="size"><button type="submit">Add Product</button></form>');
    
 // });
 
-// app.post('/ll',(req,res,next) => {
-//      //console.log(req.body.userName);
-//      name=req.body.userName;
-//      res.send(`<script>localStorage.setItem("userName", "${name}");</script>`);
-     
-      
+// app.post('/product',(req,res,next) => {
+//      console.log(req.body); 
 //     res.redirect('/');
+// })
+
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+app.use(contactRoutes);
+app.use(SuccessRoutes);
+
+
+// app.use ('/',(req,res,next) => {
+//     //console.log('In another middleware :');
+//     res.send('<h1> Hello from Express</h1>');
+//     //res.send( { key1: value })
 // });
+ app.use((req,res,next) =>{
+    res.status(404).sendFile(path.join(__dirname,'views','404.html'));
+ })
 
 
+//const server=http.createServer(app);
 
-//  app.post('/message',(req,res,next)   =>
-//  {
-//    const message=`${name} : ${req.body.message} `;
-//    //console.log(req.body);
-
-//    fs.appendFileSync('userMessage.txt',message,(err) => {
-      
-//     if(err){
-//         console.log(err);
-//     }
-//   });
-//   res.redirect('/');
-
-//  });
-//  app.use ('/',(req,res,next) => {
-//     fs.readFile("userMessage.txt" ,(err, data) => {
-//       if(err)
-//       {
-//           console.log(err);
-//           fs.writeFileSync('userMessage.txt',"No chats exist");
-
-//       }
- 
-//     res.send(`<body>${data}
-//     <form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>`);
-// }
-// )
-// });
-
- 
-
-//  const server = http.createServer(app);
-// server.listen(3000);
-
-
-const http = require('http');
-const fs = require('fs');
-const bodyParser = require('body-parser');
-const express = require('express');
-
-let name = '';
-const app = express();
-
-app.use(bodyParser.urlencoded({ extended: false }))
-;
-app.use(express.json());
-
-app.use('/login', (req, res, next) => {
-    res.send('<body><form action="/ll" method="POST"><input type="text" name="userName"><button type="submit">Login</button></form></body>');
-});
-
-app.post('/ll', (req, res, next) => {
-    name = req.body.userName;
-    res.redirect('/');
-});
-
-app.post('/message', (req, res, next) => {
-    const message = `${name} : ${req.body.message} `;
-    fs.appendFileSync('userMessage.txt', message  , (err) => {
-        if (err) {
-            console.log(err);
-        }
-    });
-    res.redirect('/');
-});
-
-app.use('/', (req, res, next) => {
-    try {
-        const data = fs.readFileSync('userMessage.txt', 'utf8');
-        res.send(`
-            <script>
-                // Set the username in localStorage on the client-side
-                localStorage.setItem('username', '${name}');
-            </script>
-            <body>${data}
-            <form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form>
-        `);
-    } catch (err) {
-        console.error(err);
-        fs.writeFileSync('userMessage.txt', '');
-        res.send('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
-    }
-});
-
-const server = http.createServer(app);
-server.listen(3000);
+app.listen(3000);

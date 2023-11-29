@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Appointment App</title>
+</head>
+<body>
+    <h1>Booking Appointment App</h1>
+    <form id="booking-form" action ='/' method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        
+        <label for="phoneNumber">Phone Number:</label><br>
+        <input type="text" id="phoneNumber" name="phoneNumber"><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+        
+        <input type="submit" value="Book Appointment">
+    </form>
+
+    <ul id="booking-list"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/Javascript/index.js"></script>
+</body>
+</html>

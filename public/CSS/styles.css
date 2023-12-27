@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type="text"] {
+    width: 60%; /* Adjust the width here as needed */
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  input[type="number"],
+  input[type="submit"],
+  button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  input[type="number"]:focus,
+  input[type="submit"]:focus,
+  button:focus {
+    outline: none;
+  }
+  input[type="number"]:hover,
+  input[type="submit"]:hover,
+  button:hover {
+    background-color: #2980b9;
+  }
+  #searchResults {
+    margin-top: 20px;
+  }
+  hr {
+    margin: 20px 0;
+  }

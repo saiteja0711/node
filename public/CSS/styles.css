@@ -1,0 +1,106 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+/* Styles for the blog form (30% width) */
+.blog-form {
+  width: 30%;
+  height: 100vh; /* Adjusting height to fit the entire height of the viewport */
+  padding: 20px;
+  background-color: #03448b;
+  color: rgb(169, 169, 4);
+  box-sizing: border-box; /* Includes padding in the width calculation */
+  float: left; /* Float left to keep it on the left side */
+}
+
+/* Styles for the content block (70% width) */
+.content-block {
+  width: 70%;
+  height: 100vh; /* Adjusting height to fit the entire height of the viewport */
+  padding: 20px;
+  background-color: #f2f2f2;
+  box-sizing: border-box; /* Includes padding in the width calculation */
+  overflow-y: scroll; /* Adding scroll for content overflow */
+  float: left; /* Float left to keep it on the left side */
+}
+
+/* Clearing the float to prevent layout issues */
+.container:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Heading styles */
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+/* Input and textarea styles */
+.input-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Button styles */
+button {
+  padding: 10px 20px;
+  background-color: orange; /* Change button color to orange */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #ff8c00; /* Darker shade of orange on hover */
+}
+
+/* Displayed content styles */
+.display-content {
+  font-size: 16px;
+}
+
+.display-content p {
+  margin-bottom: 10px;
+}
+
+.display-content-text {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Add styles for expanded content */
+.blog-post .blog-content.expanded {
+    display: block; /* or any other desired style for expanded content */
+  }
+  
+  .blog-post .blog-author.expanded {
+    font-weight: bold; /* or any other desired style for expanded author */
+  }
+  

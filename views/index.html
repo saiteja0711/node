@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Blog Post</title>
+  <link rel="stylesheet" href="/CSS/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="blog-form">
+      <h1>Creating a New Blog Post</h1>
+      <form id="blogForm" action="/", method="post">
+        <div class="input-group">
+          <label for="blogTitle">Blog Title:</label>
+          <input type="text" id="blogTitle" name="blogTitle" required>
+        
+          <label for="blogAuthor">Blog Author:</label>
+          <input type="text" id="blogAuthor" name="blogAuthor" required>
+        
+          <label for="blogContent">Blog Content:</label>
+          <textarea id="blogContent" name="blogContent" rows="8" required></textarea>
+        <!-- </div>
+        <div class="input-group"> -->
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- <div class="content-block">
+        <div class="display-content"> -->
+    <div class="content-block" id="blogPosts">
+    </div>
+   <!-- </div>
+    </div> -->
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="/Javascript/main.js"></script>
+</body>
+</html>

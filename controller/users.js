@@ -11,11 +11,13 @@ exports.addUser =((req,res,next)=> {
         email:email,
         password: password
        }).then( result => {
-        console.log(result);
+        //console.log(result);
         console.group("created sucessfully");
         res.redirect('/');
       }).catch(err => {
         console.log(err);
+        
+        res.redirect('/');
       });
 });
 

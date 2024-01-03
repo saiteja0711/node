@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enter Details</title>
+</head>
+<body>
+    <form id="userForm" action="/", method="post">
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="text" id="password"  name="password" required><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="errorMessages"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        function validateForm() {
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const errorMessages = document.getElementById('errorMessages');
+            let errorMessage = '';
+
+            if (!nameInput.value) {
+                errorMessage += 'Name is required.<br>';
+            }
+            if (!emailInput.value) {
+                errorMessage += 'Email is required.<br>';
+            }
+            if (!passwordInput.value) {
+                errorMessage += 'Password is required.<br>';
+            }
+
+            if (errorMessage) {
+                errorMessages.innerHTML = '<p><strong>Please complete the following fields:</strong></p>' + errorMessage;
+                return false; // Prevents form submission
+            } else {
+                errorMessages.innerHTML = ''; // Clear any previous error messages
+                return true; // Allows form submission
+            }
+        }
+    </script>
+</body>
+</html>

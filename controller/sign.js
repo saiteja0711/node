@@ -1,9 +1,11 @@
 const Users = require('../models/users');
 
 exports.addUser =((req,res,next)=> {
+
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    let errMessage = "";
     
 
     Users.create({
@@ -11,21 +13,13 @@ exports.addUser =((req,res,next)=> {
         email:email,
         password: password
        }).then( result => {
-        //console.log(result);
-        console.group("created sucessfully");
-        res.redirect('/');
-      }).catch(err => {
-        console.log(err);
+        console.log('registered succesfully')
+        res.json('sucess')
         
-        res.redirect('/');
+        
+      }).catch(err => {
+        res.json('failed')
+        console.log(err);
       });
-});
+})
 
-exports.getUser = ((req,res,next)=> {
-    Users.findAll()
-    .then (users =>{
-        res.json(users);
-    })
-    .catch(err => console.log(err));
-  });
-  

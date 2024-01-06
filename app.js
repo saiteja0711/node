@@ -4,10 +4,15 @@ const bodyParser = require('body-parser');
 
 const sequelize = require('./util/database');
 
-const userController = require('./controller/users');
+const userRouter = require('./routes/users');
+
+const cors = require('cors')
 
 const app = express();
 
+app.use(cors())
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -17,11 +22,16 @@ app.get('/', function(req, res, next) {
     
 });
 
-app.get('/details', userController.getUser);
-app.post('/',userController.addUser);
+app.get('/login', function(req, res, next) {
+    res.sendFile(path.join(__dirname, 'views','login.html'));
+    
+});
+
+app.use('/user',userRouter);
 
 sequelize
-.sync({force:true})
+//.sync({force:true})
+.sync()
 .then (result =>{
     //console.log(result);
     app.listen(3000);

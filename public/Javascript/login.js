@@ -14,13 +14,17 @@ form.addEventListener('submit', async function(event) {
         });
 
         if (response.data === 'userNotFound') {
-            errorMessages.innerHTML = '<p>User not found!</p>';
+            alert('User not found!');
+            window.location.href = '/login'; 
         } else if (response.data === 'wrongPassword') {
-            errorMessages.innerHTML = '<p>Incorrect password!</p>';
+            alert('Wrong Password!');
+            window.location.href = '/login'; 
         } else if (response.data === 'success') {
-            // Redirect or do something on successful login
-            errorMessages.innerHTML = '<p>User Loged In!</p>';
-            window.location.href = '/login'; // Redirect to dashboard after successful 
+            
+            alert('User Loged In!');
+            
+            window.location.href = '/login'; 
+             
             
         }
     } catch (error) {

@@ -6,29 +6,33 @@ form.addEventListener('submit', async function(event) {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
+
     try {
         const response = await axios.post('http://localhost:3000/user/login', {
             email: email,
             password: password
         });
 
-        if (response.data === 'userNotFound') {
-            alert('User not found!');
-            window.location.href = '/login'; 
-        } else if (response.data === 'wrongPassword') {
-            alert('Wrong Password!');
-            window.location.href = '/login'; 
-        } else if (response.data === 'success') {
-            
-            alert('User Loged In!');
-            
-            window.location.href = '/login'; 
-             
-            
+        console.log(response);
+        if (response.data.success) {
+            alert(response.data.success);
+            window.location.href = '/login';
+        } else {
+            alert(response.data.error || 'Login failed');
         }
     } catch (error) {
-        console.error(error);
-        errorMessages.innerHTML = '<p>Failed to sign in. Please try again.</p>';
+        if (error.response) {
+            if (error.response.status === 401) {
+                alert('Wrong password!');
+                
+            } else if (error.response.status === 404) {
+                alert('User not found!');
+                
+            }
+        } else {
+            console.error(error);
+            errorMessages.innerHTML = '<p>Failed to sign in. Please try again.</p>';
+        }
     }
 });
+

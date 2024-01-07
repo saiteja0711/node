@@ -12,22 +12,22 @@ let form = document.getElementById('form')
                 email: email,
                 password: password
             }
-            
+            let parentNode = document.getElementById('errorMessages');
+            parentNode.innerHTML = '';
+                
             try {
-                let parentNode = document.getElementById('errorMessages');
-                parentNode.innerHTML = '';
                 
                 let promise = await axios.post('http://localhost:3000/user/signin', obj);
-                if (promise.data === 'failed') {
-                    let childHTML = '<h3>Email is already Taken</h3>';
-                    parentNode.innerHTML = parentNode.innerHTML + childHTML;
-                    console.log('failed');
-                } else {
+                if (promise.status == 201) {
                     let childHTML = '<h3>Registered Successfully</h3>';
                     parentNode.innerHTML = parentNode.innerHTML + childHTML;
-                    console.log('success');
-                }
+                    
+                } 
             } catch (err) {
+                if (err.response && err.response.status === 500) {
+                    let childHTML = '<h3>Email is already taken</h3>';
+                    parentNode.innerHTML = parentNode.innerHTML + childHTML;
+                }
                 console.log(err);
             }
         }

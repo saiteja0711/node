@@ -1,30 +1,31 @@
-const Users = require('../models/users');
 
-exports.loginUser = (req, res) => {
+const Users = require('../models/users');
+const bcrypt = require('bcrypt');
+
+exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
-    Users.findOne({ where: { email: email } })
-        .then(user => {
-            if (!user) {
-               
-                
-                return res.json('userNotFound');
+    try {
+        const user = await Users.findOne({ where: { email: email } });
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found!' });
+        }
+
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Internal server error' });
             }
 
-           
-            
-            if (user.password !== password) {
-               
-                
-                return res.json('wrongPassword');
+            if (result) {
+                return res.json({ success: 'User logged in successfully!' });
+            } else {
+                return res.status(401).json({ error: 'Wrong password!' });
             }
-
-            
-            
-            return res.json('success');
-        })
-        .catch(error => {
-            console.error(error);
-            return res.status(500).json('error');
         });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };

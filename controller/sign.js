@@ -1,25 +1,26 @@
 const Users = require('../models/users');
+const bcrypt = require('bcrypt');
 
-exports.addUser =((req,res,next)=> {
-
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
-    let errMessage = "";
-    
-
-    Users.create({
-        name:name,
-        email:email,
-        password: password
-       }).then( result => {
-        console.log('registered succesfully')
-        res.json('sucess')
+exports.addUser = async (req, res, next) => {
+    try {
+        const name = req.body.name;
+        const email = req.body.email;
+        const password = req.body.password;
         
-        
-      }).catch(err => {
-        res.json('failed')
-        console.log(err);
-      });
-})
+        const saltRounds = 10;
+      bcrypt.hash(password, saltRounds, async(err,hash)=>{
+        console.log(err)
+        try {
+            await Users.create({ name, email, password: hash });
+            res.status(201).json({ message: 'Successfully created new user' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Error creating user' });
+        };
+     });
+} catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 

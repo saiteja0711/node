@@ -6,6 +6,8 @@ const sequelize = require('./util/database');
 
 const userRouter = require('./routes/users');
 
+const expenseRouter = require('./routes/expenses')
+
 const cors = require('cors')
 
 const app = express();
@@ -24,10 +26,14 @@ app.get('/', function(req, res, next) {
 
 app.get('/login', function(req, res, next) {
     res.sendFile(path.join(__dirname, 'views','login.html'));
-    
+});
+
+app.get('/expenses', function(req, res, next) {
+    res.sendFile(path.join(__dirname, 'views','expenses.html'));
 });
 
 app.use('/user',userRouter);
+app.use('/expenses',expenseRouter);
 
 sequelize
 //.sync({force:true})

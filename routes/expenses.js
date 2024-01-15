@@ -7,6 +7,7 @@ const router = express.Router();
  router.post('/addexpenses',expenses.addExpense);
 
  router.get('/details',expenses.getExpense);
+ 
 
  router.post('/delete/:id',expenses.postDeleteExpense)
 

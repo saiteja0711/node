@@ -19,6 +19,7 @@ exports.loginUser = async (req, res, next) => {
             }
 
             if (result) {
+                
                 return res.json({ success: 'User logged in successfully!' });
             } else {
                 return res.status(401).json({ error: 'Wrong password!' });

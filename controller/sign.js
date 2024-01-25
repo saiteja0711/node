@@ -1,5 +1,6 @@
 const Users = require('../models/users');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.addUser = async (req, res, next) => {
     try {

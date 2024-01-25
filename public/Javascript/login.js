@@ -16,6 +16,7 @@ form.addEventListener('submit', async function(event) {
         console.log(response);
         if (response.data.success) {
             alert(response.data.success);
+            localStorage.setItem('token',response.data.token)
             window.location.href = '/expenses';
         } else {
             alert(response.data.error || 'Login failed');

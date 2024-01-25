@@ -1,14 +1,16 @@
 const Expense = require('../models/expenses');
 
 exports.addExpense = ((req, res, next) => {
+    console.log("addexpense >>>..",req.user)
     const expenseAmount = req.body.expenseAmount;
     const expenseDescription = req.body.expenseDescription;
     const expenseCategory = req.body.expenseCategory;
-
+   
     Expense.create({
         expenseAmount: expenseAmount,
         expenseDescription: expenseDescription,
-        expenseCategory: expenseCategory
+        expenseCategory: expenseCategory,
+        userId : req.user.id
     }).then(result => {
         console.group("created successfully");
         return res.json({ success: 'succesfully added' });
@@ -19,8 +21,9 @@ exports.addExpense = ((req, res, next) => {
 });
 
 exports.getExpense = ((req,res,next)=> {
-    Expense.findAll()
+    Expense.findAll({where:{userId : req.user.id}})
     .then (expense =>{
+        console.log(expense);
         res.json(expense);
     })
     .catch(err => console.log(err));

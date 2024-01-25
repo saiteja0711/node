@@ -1,12 +1,22 @@
 const path = require('path');
+
 const express = require('express');
+
 const bodyParser = require('body-parser');
 
 const sequelize = require('./util/database');
 
 const userRouter = require('./routes/users');
 
-const expenseRouter = require('./routes/expenses')
+const expenseRouter = require('./routes/expenses');
+
+const user = require('./models/users');
+
+const expenses = require('./models/expenses');
+
+const payment = require('./routes/payment')
+
+const order = require('./models/order')
 
 const cors = require('cors')
 
@@ -34,10 +44,18 @@ app.get('/expenses', function(req, res, next) {
 
 app.use('/user',userRouter);
 app.use('/expenses',expenseRouter);
+app.use('/purchase',payment);
+
+user.hasMany(expenses);
+expenses.belongsTo(user);
+
+user.hasMany(order);
+order.belongsTo(user)
+
 
 sequelize
-//.sync({force:true})
-.sync()
+.sync({force:true})
+//.sync()
 .then (result =>{
     //console.log(result);
     app.listen(3000);

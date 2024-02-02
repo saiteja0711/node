@@ -11,12 +11,18 @@ exports.addExpense = ((req, res, next) => {
         expenseDescription: expenseDescription,
         expenseCategory: expenseCategory,
         userId : req.user.id
-    }).then(result => {
-        console.group("created successfully");
-        return res.json({ success: 'succesfully added' });
-    }).catch(err => {
-        console.log(err);
-        return res.status(500).json({ error: 'Failed to add expense' });
+    }).then((exp)=>{
+        const totalExpense=Number(req.user.totalExpense)+Number(exp.examt)
+        console.log(req.user.id)
+        User.update(
+            {totalExpense:totalExpense},
+            {where:{id:req.user.id}})
+        .then(()=>{
+            res.status(200).json({expense:exp})
+        })
+        .catch(err=>{
+            return  res.status(500).json({success:false,error:err})
+        })
     });
 });
 

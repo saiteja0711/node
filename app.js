@@ -16,6 +16,9 @@ const expenses = require('./models/expenses');
 
 const payment = require('./routes/payment')
 
+const premium = require('./routes/premium')
+
+
 const order = require('./models/order')
 
 const cors = require('cors')
@@ -45,6 +48,7 @@ app.get('/expenses', function(req, res, next) {
 app.use('/user',userRouter);
 app.use('/expenses',expenseRouter);
 app.use('/purchase',payment);
+app.use('/premium',premium)
 
 user.hasMany(expenses);
 expenses.belongsTo(user);

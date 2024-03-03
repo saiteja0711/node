@@ -2,7 +2,6 @@ let form = document.getElementById('expenseForm');
 let expenseList = document.getElementById('expenseList');
 const token = localStorage.getItem("token");
 form.addEventListener('submit', addExpense);
-//const jwt = require('jsonwebtoken');
 
 async function addExpense(e) {
     e.preventDefault();
@@ -22,22 +21,36 @@ async function addExpense(e) {
         if (response.data.success) {
             alert(response.data.success);
             window.location.href = '/expenses';
+
         }
     } catch (err) {
         console.log(err);
     }
 }
 
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+function showpremium(){
+    document.getElementById("rzp-button1").style.display = 'none';
+    const listItem = document.createElement('li');
+    listItem.textContent = "You are a premium user";
+    
+    //show leader board
+    const inputElement = document.createElement('input')
+    inputElement.type="button"
+    inputElement.value= "Show Leaderboard"
+    listItem.appendChild(inputElement);
+    document.getElementById('content').appendChild(listItem);
+    
+    inputElement.onclick = async()=>{
+        const userLeaderboard = await axios.get('http://localhost:3000/premium/showleaderboard')
+        let Leaderboard = document.getElementById('leaderboard')
+        Leaderboard.innerHTML+=`<h1>Leaderboard<h1>`
+        console.log(userLeaderboard.data[0].id)
+        userLeaderboard.data.forEach((userDetails) =>{
+          Leaderboard.innerHTML+=`<li>Name-${userDetails.name} TotalExpense-${userDetails.totalExpense}</li>`
+        })
+    }
 
-    return JSON.parse(jsonPayload);
 }
-
 
 async function displayExpenses() {
     try {
@@ -45,85 +58,91 @@ async function displayExpenses() {
             headers: { Authorization: token },
           });
         console.log(expense);
-
+        expenseList.innerHTML+=`<h1>Expenses<h1>`
         expense.data.forEach(expenses => {
             const listItem = document.createElement('li');
             listItem.textContent = `${expenses.expenseAmount} - ${expenses.expenseDescription} - ${expenses.expenseCategory} `;
+            
+           const inputElement = document.createElement('input')
+           inputElement.type="button"
+           inputElement.value= "Delete Expense"
+           listItem.appendChild(inputElement);
 
-            const deleteForm = document.createElement('form');
-            deleteForm.action = `/expenses/delete/${expenses.id}`;
-            deleteForm.method = 'POST';
+           expenseList.appendChild(listItem); 
 
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'Delete-Task';
-            deleteButton.textContent = 'Delete';
+           inputElement.onclick = async(e)=>{
+            let item = e.target.parentElement;
+            console.log(item);
+            let id= expenses.id
 
-            deleteForm.appendChild(deleteButton);
-            listItem.appendChild(deleteForm);
-
-            expenseList.appendChild(listItem); 
-
-            deleteForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                try {
-                    await axios.post(deleteForm.action);
-                    listItem.remove(); 
-                } catch (error) {
-                    console.error('Error deleting:', error);
-                    // Handle error if deletion fails
-                }
-            });
+            try {
+                let deletb=await axios.delete(`http://localhost:3000/expenses/delete/${id}`,{headers:{"Authorization":token}});
+                console.log(deletb)
+                listItem.remove();
+              } catch (err) {
+                console.log(err);
+              }
+            }
         });
     } catch (error) {
         console.error('Error fetching expenses:', error);
         // Handle error if fetching expenses fails
     }
 }
-function showpremium(){
-        document.getElementById("rzp-button1").style.display = 'none';
-        const listItem = document.createElement('li');
-        listItem.textContent = "You are a premium user";
-        document.getElementById('content').appendChild(listItem);
-
-}
-document.addEventListener('DOMContentLoaded', function () {
-
-  const decoded= parseJwt(token)
-  console.log("decoded token",decoded)
-  const ispremium=decoded.ispremium 
-  console.log("ispremium token",ispremium)
-  
-  
-  if(ispremium){
-    showpremium()
-  }
-    displayExpenses();
-
-});
-
-document.getElementById("rzp-button1").onclick = async function(e) {
+function parseJwt(token) {
     try {
-        const response = await axios.get('http://localhost:3000/purchase/premiumpay', { headers: { 'Authorization': token } });
-        console.log('response is', response.data);
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Error parsing JWT:', error);
+        return null;
+    }
+}
 
-        const options = {
-            "key": response.data.key_id,
-            "order_id": response.data.order.id,
-            handler: async function (response) {
-                try {
-                    await axios.post('http://localhost:3000/purchase/updatetransaction', {
-                        order_id: options.order_id,
-                        payment_id: options.key
-                    }, { headers: { "Authorization": token } });
+document.addEventListener('DOMContentLoaded', function () {
+    
+    if (!token) {
+      // Handle the case where the token is missing
+      console.error('Token not found. Please log in.');
+      return;
+    }
+    const decoded = parseJwt(token);
+    console.log('Decoded token:', decoded);
+    const isPremium = decoded.ispremium;
 
-                    alert('You are a Premium User');
+    if (isPremium) {
+      showpremium();
+      }
+    displayExpenses();
+    document.getElementById('rzp-button1').onclick = buyPremiumHandler;
+  });
+  
 
-                    localStorage.setItem('token',res.data.token)
-                    showpremium();
-                } catch (error) {
-                    console.error('Error updating transaction:', error);
-                    alert('Something went wrong while updating the transaction');
-                }
+async function buyPremiumHandler(e) {
+    try {
+        const promise = await axios.get('http://localhost:3000/purchase/premiumpay', { headers: { 'Authorization': token } });
+        console.log('promise is', promise);
+        let options = {
+            "key": promise.data.key_id,
+            "order_id": promise.data.order.id,
+            handler: async function (promise) {
+                const res= await axios.post('http://localhost:3000/purchase/updatetransaction', {
+                    order_id: options.order_id,
+                    payment_id: options.key
+                }, { headers: { "Authorization": token } });
+
+                alert('You are a Premium User');
+               
+                localStorage.setItem('token', res.data.token);
+                
+                showpremium();
+                
+                
             }
         };
 
@@ -137,6 +156,6 @@ document.getElementById("rzp-button1").onclick = async function(e) {
         });
     } catch (error) {
         console.error('Error fetching payment details:', error);
-        alert('Something went wrong while fetching payment details');
+        alert('Failed to fetch payment details. Please try again.');
     }
-};
+}

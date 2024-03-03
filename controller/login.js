@@ -3,11 +3,11 @@ const Users = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-function generateToken(id){
-    return jwt.sign({userId:id},'secretkey')
+function generateToken(id ,ispremium ){
+    return jwt.sign({userId:id , ispremium},'secretkey')
 }
 
-exports.loginUser = async (req, res, next) => {
+async function loginUser (req, res, next) {
     const { email, password } = req.body;
 
     try {
@@ -25,7 +25,7 @@ exports.loginUser = async (req, res, next) => {
 
             if (result) {
                 
-                return res.json({ success: 'User logged in successfully!',token:generateToken(user.id)});
+                return res.json({ success: 'User logged in successfully!',token:generateToken(user.id, user.ispremium)});
             } else {
                 return res.status(401).json({ error: 'Wrong password!' });
             }
@@ -35,3 +35,7 @@ exports.loginUser = async (req, res, next) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+module.exports={
+    generateToken,
+    loginUser
+}

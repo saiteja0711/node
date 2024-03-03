@@ -11,7 +11,7 @@ const userauthenticate = require('../middleware/auth')
  router.get('/details',userauthenticate.authenticate,expenses.getExpense);
  
 
- router.post('/delete/:id',expenses.postDeleteExpense)
+ router.delete('/delete/:id',userauthenticate.authenticate,expenses.postDeleteExpense)
 
 module.exports = router;
 

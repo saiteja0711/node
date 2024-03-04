@@ -13,6 +13,8 @@ const expenseRouter = require('./routes/expenses');
 const user = require('./models/users');
 
 const expenses = require('./models/expenses');
+ 
+const forgotPasswordRequests = require('./models/forgotPasswordRequests');
 
 const payment = require('./routes/payment')
 
@@ -62,6 +64,9 @@ expenses.belongsTo(user);
 
 user.hasMany(order);
 order.belongsTo(user)
+
+user.hasMany(forgotPasswordRequests);
+forgotPasswordRequests.belongsTo(user);
 
 
 sequelize

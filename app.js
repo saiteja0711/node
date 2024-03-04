@@ -18,6 +18,8 @@ const payment = require('./routes/payment')
 
 const premium = require('./routes/premium')
 
+const forgotPassword = require('./routes/forgotPassword')
+
 
 const order = require('./models/order')
 
@@ -45,10 +47,15 @@ app.get('/expenses', function(req, res, next) {
     res.sendFile(path.join(__dirname, 'views','expenses.html'));
 });
 
+app.get('/forgotPassword', function(req, res, next) {
+    res.sendFile(path.join(__dirname, 'views','forgotPassword.html'));
+});
+
 app.use('/user',userRouter);
 app.use('/expenses',expenseRouter);
 app.use('/purchase',payment);
 app.use('/premium',premium)
+app.use('/password',forgotPassword)
 
 user.hasMany(expenses);
 expenses.belongsTo(user);

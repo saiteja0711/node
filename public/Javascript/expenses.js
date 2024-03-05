@@ -1,5 +1,6 @@
 let form = document.getElementById('expenseForm');
 let expenseList = document.getElementById('expenseList');
+let table = document.getElementById("myTable");
 const token = localStorage.getItem("token");
 form.addEventListener('submit', addExpense);
 
@@ -50,45 +51,71 @@ function showpremium(){
         })
     }
 
+    downloadbtn() 
+
 }
 
 async function displayExpenses() {
     try {
-        const expense = await axios.get('http://localhost:3000/expenses/details',{
+        const expense = await axios.get('http://localhost:3000/expenses/details', {
             headers: { Authorization: token },
-          });
+        });
         console.log(expense);
-        expenseList.innerHTML+=`<h1>Expenses<h1>`
+        expenseList.innerHTML += `<h1>Expenses<h1>`
+        tableHeader();
         expense.data.forEach(expenses => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${expenses.expenseAmount} - ${expenses.expenseDescription} - ${expenses.expenseCategory} `;
-            
-           const inputElement = document.createElement('input')
-           inputElement.type="button"
-           inputElement.value= "Delete Expense"
-           listItem.appendChild(inputElement);
+            var row = table.insertRow();
+            row.className = "row";
+            row.id = `${expenses.id}`;
+            var cell1 = row.insertCell(-1);
+            var cell2 = row.insertCell(-1);
+            var cell3 = row.insertCell(-1);
+            var cell4 = row.insertCell(-1);
 
-           expenseList.appendChild(listItem); 
+            cell1.innerHTML = `${expenses.expenseCategory}`;
+            cell2.innerHTML = `${expenses.expenseDescription}`;
+            cell3.innerHTML = `${expenses.expenseAmount}`;
+            cell4.innerHTML = `<input type="button" value="Delete Expense" class="delete"></input>`;
+        })
 
-           inputElement.onclick = async(e)=>{
-            let item = e.target.parentElement;
-            console.log(item);
-            let id= expenses.id
-
-            try {
-                let deletb=await axios.delete(`http://localhost:3000/expenses/delete/${id}`,{headers:{"Authorization":token}});
-                console.log(deletb)
-                listItem.remove();
-              } catch (err) {
-                console.log(err);
-              }
+        // Add event listener for delete buttons using event delegation
+        table.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('delete')) {
+                const row = e.target.closest('tr');
+                let id = e.target.parentElement.parentElement.id;
+                
+                try {
+                    await axios.delete(`http://localhost:3000/expenses/delete/${id}`, {
+                        headers: { Authorization: token }
+                    });
+                    row.remove();
+                } catch (err) {
+                    console.error('Error deleting expense:', err);
+                }
             }
         });
     } catch (error) {
         console.error('Error fetching expenses:', error);
-        // Handle error if fetching expenses fails
     }
 }
+async function downloadbtn() {
+    const btn = document.createElement("input");
+    btn.type = "button";
+    btn.value = "Download";
+    const div = document.getElementById("premium");
+    div.appendChild(btn);
+    btn.onclick = async () => {
+      let promise = await axios.get("http://localhost:3000/expenses/download",{headers:{Authorization:token}});
+      console.log(promise)
+      if(promise.status==200){
+        let a=document.createElement('a')
+        a.href=promise.data.fileURL
+        a.download='myexpense.csv'
+        a.click()
+      }
+    };
+  }
+
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -107,7 +134,6 @@ function parseJwt(token) {
 document.addEventListener('DOMContentLoaded', function () {
     
     if (!token) {
-      // Handle the case where the token is missing
       console.error('Token not found. Please log in.');
       return;
     }
@@ -117,10 +143,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isPremium) {
       showpremium();
+      
       }
     displayExpenses();
     document.getElementById('rzp-button1').onclick = buyPremiumHandler;
   });
+ 
+  function tableHeader(){
+    
+    var row = table.insertRow();
+    var cell1 = row.insertCell(-1);
+    var cell2 = row.insertCell(-1);
+    var cell3 = row.insertCell(-1);
+    var cell4 = row.insertCell(-1);
+
+    cell1.innerHTML = "<b><pre> Category </pre<b>";
+    cell2.innerHTML = "<b><pre> Description </pre><b>";
+    cell3.innerHTML = "<b><pre>  Amount </pre><b>";
+    cell4.innerHTML = "<b><pre> Changes </pre><b>";
+
+  }
   
 
 async function buyPremiumHandler(e) {

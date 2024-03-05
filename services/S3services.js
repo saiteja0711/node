@@ -1,0 +1,37 @@
+const AWS = require('aws-sdk');
+function uploadToS3(data,filename){
+    const BUCKET_NAME = 'expensetrackerapp789';
+    const IAM_USER_KEY = 'AKIA6ODU2YOI7JSYBAXG';
+    const IAM_USER_SECRET='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';
+
+    let s3bucket = new AWS.S3({
+        accessKeyId:IAM_USER_KEY,
+        secretAccessKey:IAM_USER_SECRET,
+        
+    })
+    let parmas = {
+            Bucket: BUCKET_NAME,
+            Key:filename,
+            Body:data,
+            ACL :'public-read'
+        }
+        
+    return new Promise((resolve,reject)=>{
+        s3bucket.upload(parmas,(err,s3response)=>{
+            if(err){
+                console.log('something went wrong',err)
+                reject(err)
+            }
+            else{
+                console.log('success',s3response);
+                
+                console.log('link is >>>>>>.',s3response.Location)
+                
+                resolve(s3response.Location)
+            }
+        })
+    })
+}
+module.exports={
+    uploadToS3
+}

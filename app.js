@@ -6,24 +6,19 @@ const bodyParser = require('body-parser');
 
 const sequelize = require('./util/database');
 
-const userRouter = require('./routes/users');
-
-const expenseRouter = require('./routes/expenses');
 
 const user = require('./models/users');
-
 const expenses = require('./models/expenses');
- 
+const order = require('./models/order');
 const forgotPasswordRequests = require('./models/forgotPasswordRequests');
+const DownloadedFiles = require('./models/downloadedfiles')
 
+const userRouter = require('./routes/users');
+const expenseRouter = require('./routes/expenses');
 const payment = require('./routes/payment')
-
 const premium = require('./routes/premium')
-
 const forgotPassword = require('./routes/forgotPassword')
 
-
-const order = require('./models/order')
 
 const cors = require('cors')
 
@@ -67,6 +62,9 @@ order.belongsTo(user)
 
 user.hasMany(forgotPasswordRequests);
 forgotPasswordRequests.belongsTo(user);
+
+user.hasMany(DownloadedFiles);
+DownloadedFiles.belongsTo(user);
 
 
 sequelize

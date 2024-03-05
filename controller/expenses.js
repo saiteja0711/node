@@ -1,8 +1,11 @@
 const Expense = require('../models/expenses');
 const User = require('../models/users');
+const DownloadedFiles = require('../models/downloadedfiles')
 const sequelize = require('../util/database');
+const S3services = require('../services/S3services');
+const UserServices = require('../services/userservices');
 
-exports.addExpense =async (req, res, next) => {
+const addExpense = async (req, res, next) => {
     const t = await sequelize.transaction();
     try{
     const expenseAmount = req.body.expenseAmount;
@@ -30,21 +33,43 @@ exports.addExpense =async (req, res, next) => {
     }
 };
 
-
-
-
-
-exports.getExpense = ((req,res,next)=> {
+const getExpense = ((req,res,next)=> {
     Expense.findAll({where:{userId : req.user.id}})
     .then (expense =>{
-        console.log(expense);
+        //console.log(expense);
         res.json(expense);
     })
     .catch(err => console.log(err));
   });
+
+
+  const downloadExpenses =  async(req, res,next) => {
+    try {
+    const expenses =  await Expense.findAll({where:{userId : req.user.id}});
+    //console.log(expenses);
+    const stringifiedExpenses = JSON.stringify(expenses);
+    const userId = req.user.id;
+
+    const filename = `Expenses${userId}/${new Date()}.txt`;
+    const fileURL = await S3services.uploadToS3(stringifiedExpenses,filename);
+    await DownloadedFiles.create({
+        fileURL:fileURL,
+        userId:userId
+    })
+    
+    res.status(200).json ({ fileURL, success: true});
+    }
+    catch (err){
+        console.error(err);
+        res.status(500).json({fileURL:'',success:false,err:err});
+
+    }
+
+}
+
   
 
-  exports.postDeleteExpense = async (req, res,next) => {
+const postDeleteExpense = async (req, res,next) => {
     const t =await sequelize.transaction();
    try {
     const expenseId = req.params.id;
@@ -54,7 +79,7 @@ exports.getExpense = ((req,res,next)=> {
      const totalExpense = Number(req.user.totalExpense)-Number(expense.expenseAmount);
      let user=await User.update(
         { totalExpense: totalExpense} ,
-        {whre: { id: req.user.id },transaction:t}
+        {where: { id: req.user.id },transaction:t}
     );
      await t.commit();
      return res.json({ success: 'succesfully deleted' });
@@ -66,4 +91,10 @@ exports.getExpense = ((req,res,next)=> {
    
    }
 };
+module.exports={
+    addExpense,
+    getExpense,
+    downloadExpenses,
+    postDeleteExpense
+}
 

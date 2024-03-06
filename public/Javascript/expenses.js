@@ -1,6 +1,7 @@
 let form = document.getElementById('expenseForm');
 let expenseList = document.getElementById('expenseList');
 let table = document.getElementById("myTable");
+let pagination = document.getElementById("pagination");
 const token = localStorage.getItem("token");
 form.addEventListener('submit', addExpense);
 
@@ -55,15 +56,61 @@ function showpremium(){
 
 }
 
-async function displayExpenses() {
-    try {
-        const expense = await axios.get('http://localhost:3000/expenses/details', {
+async function get(page){
+    try{
+        const response = await axios.get(`http://localhost:3000/expenses/details?Page=${page}`,{
             headers: { Authorization: token },
-        });
-        console.log(expense);
-        expenseList.innerHTML += `<h1>Expenses<h1>`
+          })
+        console.log(response);
+        displayExpenses(response.data.expenses);
+        showPagination(response.data.pageData);
+
+    }
+    catch (error) {
+        console.error('Error fetching expenses:', error);
+    }
+
+}
+async function showPagination
+({
+currentPage,
+nextPage,
+previousPage,
+hasNextPage,
+hasPreviousPage,
+lastPage}){
+    pagination.innerHTML='';
+    if(hasPreviousPage)
+    {
+        const btn2 =document.createElement('button');
+        btn2.innerHTML=previousPage
+        btn2.addEventListener('click',()=>get(previousPage));
+        pagination.appendChild(btn2);
+    }
+    const btn1 =document.createElement('button');
+    btn1.innerHTML=`<h3>${currentPage}</h3>`
+    btn1.addEventListener('click',()=>get(currentPage));
+    pagination.appendChild(btn1);
+    if(hasNextPage)
+    {
+        const btn3 =document.createElement('button');
+        btn3.innerHTML=nextPage
+        btn3.addEventListener('click',()=>get(nextPage));
+        pagination.appendChild(btn3);
+    }
+
+
+
+}
+expenseList.innerHTML += `<h1> Expenses <h1>`;
+
+async function displayExpenses(expense) {
+    try {
+       
+        console.log('feteched expenses are>>>>>',expense);
+        table.innerHTML='';
         tableHeader();
-        expense.data.forEach(expenses => {
+        expense.forEach(expenses => {
             var row = table.insertRow();
             row.className = "row";
             row.id = `${expenses.id}`;
@@ -133,6 +180,8 @@ function parseJwt(token) {
 
 document.addEventListener('DOMContentLoaded', function () {
     
+    
+    
     if (!token) {
       console.error('Token not found. Please log in.');
       return;
@@ -145,7 +194,8 @@ document.addEventListener('DOMContentLoaded', function () {
       showpremium();
       
       }
-    displayExpenses();
+     const page = 1
+      get(page);
     document.getElementById('rzp-button1').onclick = buyPremiumHandler;
   });
  

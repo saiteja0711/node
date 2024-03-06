@@ -33,14 +33,34 @@ const addExpense = async (req, res, next) => {
     }
 };
 
-const getExpense = ((req,res,next)=> {
-    Expense.findAll({where:{userId : req.user.id}})
-    .then (expense =>{
-        //console.log(expense);
-        res.json(expense);
-    })
-    .catch(err => console.log(err));
-  });
+const getExpense = async(req,res,next)=> {
+    try{
+    const page = Number(req.query.Page);
+    const itemPerPage = 2;
+    let expenses = await Expense.findAndCountAll({
+        where :{userId:req.user.id},
+        limit:itemPerPage,
+        offset:(page-1)*itemPerPage
+
+    });
+    console.log(expenses);
+    const totalItems = expenses.count;
+    res.json({
+        expenses:expenses.rows,
+       pageData:{ 
+        currentPage:page, //currentPage
+        nextPage :Number(page)+1,
+        previousPage:Number(page)-1,
+        hasNextPage:itemPerPage * page < totalItems,
+        hasPreviousPage:page > 1,
+        lastPage:Math.ceil(totalItems/itemPerPage)}
+    });
+}
+catch (err){
+    console.log(err);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+}
+}
 
 
   const downloadExpenses =  async(req, res,next) => {

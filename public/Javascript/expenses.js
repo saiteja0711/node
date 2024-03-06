@@ -2,9 +2,42 @@ let form = document.getElementById('expenseForm');
 let expenseList = document.getElementById('expenseList');
 let table = document.getElementById("myTable");
 let pagination = document.getElementById("pagination");
+let selectElement= document.getElementById("pagesize")
+let pageSize=0
+ 
 const token = localStorage.getItem("token");
 form.addEventListener('submit', addExpense);
 
+
+
+
+function pagelimit() {
+    const pageSizeElement = document.getElementById('pagesize');
+
+    if (pageSizeElement) {
+        const storedPageSize = localStorage.getItem('pagesize');
+
+        if (storedPageSize !== null) {
+            pageSizeElement.value = storedPageSize;
+            pageSize = storedPageSize;
+        } else {
+            pageSize = pageSizeElement.value;
+            localStorage.setItem('pagesize', pageSize);
+        }
+
+        pageSizeElement.addEventListener('change', function() {
+            pageSize = pageSizeElement.value;
+            localStorage.setItem('pagesize', pageSize);
+            get(1); 
+        });
+    } else {
+        pageSize = 2;
+        localStorage.setItem('pagesize', pageSize);
+    }
+}
+
+
+pagelimit();
 async function addExpense(e) {
     e.preventDefault();
     let expenseAmount = document.getElementById('expenseAmount').value;
@@ -58,7 +91,7 @@ function showpremium(){
 
 async function get(page){
     try{
-        const response = await axios.get(`http://localhost:3000/expenses/details?Page=${page}`,{
+        const response = await axios.get(`http://localhost:3000/expenses/details?Page=${page}&limit=${pageSize}`,{
             headers: { Authorization: token },
           })
         console.log(response);
@@ -102,7 +135,6 @@ lastPage}){
 
 
 }
-expenseList.innerHTML += `<h1> Expenses <h1>`;
 
 async function displayExpenses(expense) {
     try {

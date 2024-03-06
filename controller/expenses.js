@@ -36,7 +36,7 @@ const addExpense = async (req, res, next) => {
 const getExpense = async(req,res,next)=> {
     try{
     const page = Number(req.query.Page);
-    const itemPerPage = 2;
+    const itemPerPage = Number(req.query.limit);
     let expenses = await Expense.findAndCountAll({
         where :{userId:req.user.id},
         limit:itemPerPage,

@@ -1,9 +1,10 @@
 const Sib = require('sib-api-v3-sdk');
 const uuid= require('uuid');
 const bcrypt = require('bcrypt');
-
 const User = require('../models/users');
 const forgotPasswordRequests = require('../models/forgotPasswordRequests');
+require('dotenv').config();
+
 
 exports.forgotPassword = async (req, res, next) => {
     try {
@@ -20,7 +21,8 @@ exports.forgotPassword = async (req, res, next) => {
             })
         const client = Sib.ApiClient.instance;
         const apiKey = client.authentications['api-key'];
-        apiKey.apiKey = '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'
+        apiKey.apiKey =process.env.SENDINBLUE_API_KEY;
+        
 
         const apiInstance = new Sib.TransactionalEmailsApi();
 

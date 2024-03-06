@@ -2,13 +2,13 @@ const Razorpay =require('razorpay')
 const Order = require('../models/order')
 const jwt = require('jsonwebtoken');
 const usercontroller = require('../controller/login')
-
+require('dotenv').config();
 
 const purchasepremium = async(req,res,next) =>{
     try{
         let rzp=new Razorpay({
-            key_id:'rzp_test_foSvpKrLBHKEM6',
-            key_secret:'FogGW9I2jV59HzUpCgXQ9gY3'
+            key_id:process.env.RAZORPAY_KEY_ID,
+            key_secret:process.env.RAZORPAY_KEY_SECRET
      })
      const amount=2500
      rzp.orders.create({amount,currency:'INR'},(err,order)=>{

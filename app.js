@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require("fs");
 const express = require('express');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
+//const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const sequelize = require('./util/database');
@@ -31,7 +31,7 @@ const accessLogStream=fs.createWriteStream(
 
 
 app.use(cors())
-app.use(helmet())
+//app.use(helmet())
 
 
 // Add contentSecurityPolicy option to allow specific script sources
@@ -45,7 +45,7 @@ app.use(helmet())
 //   },
 // }));
 
-app.use(compression());
+//app.use(compression());
 app.use(morgan('combined',{stream:accessLogStream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -89,7 +89,7 @@ DownloadedFiles.belongsTo(user);
 
 
 sequelize
-//.sync({force:true})
+// .sync({force:true})
 .sync()
 .then (result =>{
    app.listen(3000);

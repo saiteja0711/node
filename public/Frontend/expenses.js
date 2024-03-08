@@ -55,7 +55,7 @@ async function addExpense(e) {
           });
         if (response.data.success) {
             alert(response.data.success);
-            window.location.href = '/expenses';
+            window.location.href = 'expenses.html';
 
         }
     } catch (err) {

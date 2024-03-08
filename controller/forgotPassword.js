@@ -37,7 +37,7 @@ exports.forgotPassword = async (req, res, next) => {
             textContent: "Click here to reset your password",
             htmlContent: `<html>
             <h1>Click the link below to reset your Password</h1>
-            <a href='http://localhost:3000/password/resetpassword/${id}'>Reset your Password</a>
+            <a href='http://3.107.41.242:3000/password/resetpassword/${id}'>Reset your Password</a>
             </html>`
         });
     }
@@ -65,7 +65,7 @@ exports.resetpassword = async (req, res, next) => {
             res.status(200).send(`
                 <html>
                 <body>
-                <form id='form' action="http://localhost:3000/password/updatepassword/${id}" method="post">
+                <form id='form' action="http://3.107.41.242:3000/password/updatepassword/${id}" method="post">
                     <label for="newpassword">Enter New Password</label>
                     <input name="newpassword" type="password" required></input>
                     <button type="submit">Reset Password</button>
